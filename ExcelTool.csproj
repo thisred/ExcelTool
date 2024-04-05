@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <RootNamespace>ExcelDiffToolView</RootNamespace>
+        <LangVersion>default</LangVersion>
+        <TargetFramework>net6.0-windows7.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Remove="Assets\Avatars\avatar-2.jpg" />
+        <None Remove="Assets\background.png" />
+        <None Remove="images.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="EPPlus" Version="7.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Resource Include="Assets\Avatars\avatar-2.jpg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="Assets\background.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images.png" />
+    </ItemGroup>
+
+</Project>

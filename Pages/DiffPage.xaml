@@ -1,0 +1,32 @@
+﻿<Page x:Class="ExcelDiffToolView.Pages.DiffPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="HomePage">
+
+    <Grid>
+        <Border CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}" />
+        <StackPanel HorizontalAlignment="Left" Margin="54,0,0,0" VerticalAlignment="Top">
+            <TextBlock Text="支持比较首行是列名并且主键名是“Id”的Excel表格。" TextWrapping="Wrap" />
+            <TextBlock Text="将在桌面基于新的Excel文件生成一个副本，其中新增行标为黄色，修改的格子标为蓝色。" TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Margin="54,50,0,0" VerticalAlignment="Top">
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10" >
+                <Button Style="{DynamicResource FlatButton}" Content="选择新的Excel文件" Height="23" Margin="0 0 10 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Click="SelectNewExcel_Click" />
+                <TextBox x:Name="NewFilePath" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="460" TextWrapping="Wrap" Text="" IsReadOnly="True" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Button Style="{DynamicResource FlatButton}" Content="选择旧的Excel文件" Height="23" Margin="0 0 10 0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Click="SelectOldExcel_Click" />
+                <TextBox x:Name="OldFilePath" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="460" TextWrapping="Wrap" Text="" IsReadOnly="True" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Button Style="{DynamicResource FlatButton}" Content="重置" Height="23" HorizontalAlignment="Left" Margin="160 0 10 0" VerticalAlignment="Top" Width="150" Click="Reset" />
+                <Button Style="{DynamicResource FlatButton}" Content="开始比较" Height="23" HorizontalAlignment="Left" Margin="0 0 10 0" VerticalAlignment="Top" Width="150" Click="CompareExcelFile_Click" />
+                <Button Style="{DynamicResource FlatButton}" Content="将结果导出Excel" Height="23" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Click="SaveResult" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
