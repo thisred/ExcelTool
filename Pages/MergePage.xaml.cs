@@ -56,18 +56,26 @@ namespace ExcelDiffToolView.Pages
 
         private async void MergeExcelFile_Click(object sender, RoutedEventArgs e)
         {
+            bool success = false;
             await Task.Run(async () =>
             {
-                bool success = await ExcelMerge.SaveResult();
-                if (success)
+                try
                 {
-                    MessageBox.Show($"已经将结果保存到桌面，请打开桌面查看", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    success = await ExcelMerge.SaveResult();
                 }
-                else
+                catch (Exception exception)
                 {
-                    MessageBox.Show("是不是有啥东西填错了，还是说表格不对应？一定不是bug吧", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(exception.ToString(), "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+            if (success)
+            {
+                MessageBox.Show($"已经将结果保存到桌面，请打开桌面查看", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("是不是有啥东西填错了，还是说表格不对应？一定不是bug吧", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Clear(object sender, RoutedEventArgs e)

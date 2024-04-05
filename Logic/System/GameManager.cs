@@ -15,40 +15,17 @@ public class GameManager
 
     public static MyExcelTable LoadExcelFile(string filePath)
     {
-        var excelTable = new MyExcelTable() { FilePath = filePath };
         using var p = new ExcelPackage();
-        var sourceFile = new FileInfo(filePath);
-        var sourcePackage = new ExcelPackage(sourceFile);
+        var sourcePackage = new ExcelPackage(filePath);
         var sourceWs = sourcePackage.Workbook.Worksheets[0];
-        int dimensionRows = sourceWs.Dimension.Rows;
-        int dimensionColumns = sourceWs.GetRealColumnCount();
-
-        object[,] firstRowRange = ((object[,])sourceWs.Cells[1, 1, 1, dimensionColumns].Value);
-        int idIndex = 0;
-        for (int i = 0; i < firstRowRange.Length; i++)
+        var excelTable = new MyExcelTable
         {
-            if (firstRowRange[0, i] == null)
-            {
-                continue;
-            }
-
-            string item = Convert.ToString(firstRowRange[0, i]);
-            if (item == null || item.StartsWith("#") || string.IsNullOrWhiteSpace(item))
-            {
-                continue;
-            }
-
-            string lower = item.ToLower();
-            if (lower.Equals("id", StringComparison.CurrentCultureIgnoreCase))
-            {
-                idIndex = i;
-            }
-
-            excelTable.Columns.Add(lower);
-            excelTable.ColumnIdxDict[i] = lower;
-            excelTable.IdxColumnDict[lower] = i;
-        }
-
+            FilePath = filePath,
+            ExcelColum = sourceWs.GetExcelColum()
+        };
+        int dimensionRows = sourceWs.Dimension.Rows;
+        int dimensionColumns = excelTable.ExcelColum.RealColumnCount;
+        int idIndex = excelTable.ExcelColum.NameToColumnIdx["id"];
         for (int i = 1; i <= dimensionRows; i++)
         {
             object[,] row = (object[,])sourceWs.Cells[i, 1, i, dimensionColumns].Value;

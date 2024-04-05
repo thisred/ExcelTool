@@ -108,9 +108,9 @@ public class ExcelDiffManager
         using var package = new ExcelPackage(newTableFilePath);
         var worksheet = package.Workbook.Worksheets[0];
         int dimensionRows = worksheet.Dimension.Rows;
-        int dimensionColumns = worksheet.GetRealColumnCount();
+        int dimensionColumns = MyExcelTableNewVersion.ExcelColum.RealColumnCount;
 
-        int idIndex = MyExcelTableNewVersion.IdxColumnDict["id"];
+        int idIndex = MyExcelTableNewVersion.ExcelColum.NameToColumnIdx["id"];
         for (int i = 1; i <= dimensionRows; i++)
         {
             var rowRange = worksheet.Cells[i, 1, i, dimensionColumns];
@@ -133,6 +133,8 @@ public class ExcelDiffManager
                 continue;
             }
 
+            rowRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            rowRange.Style.Fill.BackgroundColor.SetAuto();
             rowRange.Style.Fill.PatternType = ExcelFillStyle.None;
             if (ExcelRowDiffs.TryGetValue(id, out var diff))
             {

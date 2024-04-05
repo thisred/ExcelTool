@@ -78,20 +78,28 @@ namespace ExcelDiffToolView.Pages
         private async void SaveResult(object sender, RoutedEventArgs e)
         {
             ExcelData.CompareExcelFile();
+            bool success = false;
             await Task.Run(async () =>
             {
-                bool success = await ExcelData.SaveResult();
-                if (success)
+                try
                 {
-                    string messageBoxText =
-                        $"共有{ExcelData.ExcelRowDiffs.Count}个差异，删除{ExcelData.RemovedRows.Count}个，新增{ExcelData.AddedRows.Count}个,已经将结果保存到桌面，请打开桌面查看";
-                    MessageBox.Show(messageBoxText, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    success = await ExcelData.SaveResult();
                 }
-                else
+                catch (Exception exception)
                 {
-                    MessageBox.Show("是不是有啥东西填错了，还是说表格不对应？一定不是bug吧", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(exception.ToString(), "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+            if (success)
+            {
+                string messageBoxText =
+                    $"共有{ExcelData.ExcelRowDiffs.Count}个差异，删除{ExcelData.RemovedRows.Count}个，新增{ExcelData.AddedRows.Count}个,已经将结果保存到桌面，请打开桌面查看";
+                MessageBox.Show(messageBoxText, "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("是不是有啥东西填错了，还是说表格不对应？一定不是bug吧", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

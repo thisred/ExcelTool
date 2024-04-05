@@ -30,39 +30,18 @@ public class ExcelMergeManager
             return false;
         }
 
-        var fileInfo = new FileInfo(TargetFilePath);
-        var sourcePackage = new ExcelPackage(fileInfo);
+        var sourcePackage = new ExcelPackage(TargetFilePath);
         var sourceWs = sourcePackage.Workbook.Worksheets[0];
         int dimensionRows = sourceWs.Dimension.Rows;
-        int dimensionColumns = sourceWs.GetRealColumnCount();
-        int max = MergeTable.ColumnIdxDict.Keys.Max() + 1;
-        dimensionColumns = Math.Max(dimensionColumns, max);
-        object[,] firstRow = ((object[,])sourceWs.Cells[1, 1, 1, dimensionColumns].Value);
-        int idIndex = 0;
-        for (int i = 0; i < firstRow.Length; i++)
-        {
-            if (firstRow[0, i] == null)
-            {
-                continue;
-            }
-
-            string item = (string)firstRow[0, i];
-            if (item.StartsWith("#") || string.IsNullOrWhiteSpace(item))
-            {
-                continue;
-            }
-
-            string lower = item.ToLower();
-            if (lower.Equals("id", StringComparison.CurrentCultureIgnoreCase))
-            {
-                idIndex = i;
-            }
-        }
+        var sourceExcelColum = sourceWs.GetExcelColum();
+        int max = MergeTable.ExcelColum.RealColumnCount;
+        int dimensionColumns = Math.Max(sourceExcelColum.RealColumnCount, max);
+        int idIndex = sourceExcelColum.NameToColumnIdx["id"];
 
         for (int i = 1; i <= dimensionRows; i++)
         {
-            var rowRange = sourceWs.Cells[i, 1, i, dimensionColumns];
-            object[,] row = (object[,])rowRange.Value;
+            var sourceRowRange = sourceWs.Cells[i, 1, i, dimensionColumns];
+            object[,] row = (object[,])sourceRowRange.Value;
             object o = row[0, 0];
             if (o != null)
             {
@@ -81,21 +60,31 @@ public class ExcelMergeManager
                 continue;
             }
 
-            rowRange.Style.Fill.PatternType = ExcelFillStyle.None;
+            sourceRowRange.Style.Fill.PatternType = ExcelFillStyle.None;
             if (MergeTable.Rows.TryGetValue(id, out var excelRow))
             {
                 foreach ((int key, string value) in excelRow.Columns)
                 {
-                    object cell = row[0, key];
+                    if (!MergeTable.ExcelColum.IdxToColumnName.TryGetValue(key, out string mergeColumn))
+                    {
+                        continue;
+                    }
+
+                    if (!sourceExcelColum.NameToColumnIdx.TryGetValue(mergeColumn, out int idx))
+                    {
+                        // 源文件中不存在被合并的文件的列
+                        continue;
+                    }
+
+                    object cell = row[0, idx];
                     if (cell != null && Convert.ToString(cell) != value)
                     {
-                        string columnName = MergeTable.ColumnIdxDict.GetValueOrDefault(key);
-                        rowRange.SetCellValue(0, key, value);
+                        sourceRowRange.SetCellValue(0, idx, value);
                     }
 
                     if (cell == null)
                     {
-                        rowRange.SetCellValue(0, key, value);
+                        sourceRowRange.SetCellValue(0, idx, value);
                     }
                 }
             }
